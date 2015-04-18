@@ -1,0 +1,5 @@
+Revision history for {{$dist->name}}
+
+{{$NEXT}}
+        - process Benchmark::Perl::Formance results
+          (Tapper BenchmarkAnythingData format)
