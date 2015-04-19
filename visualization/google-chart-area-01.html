@@ -7,11 +7,11 @@
       google.setOnLoadCallback(drawChart);
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
-          ['Year', 'Sales', 'Expenses'],
-          ['2013',  1000,      400],
-          ['2014',  1170,      460],
-          ['2015',  660,       1120],
-          ['2016',  1030,      540]
+            ['Year', 'Sales', 'Expenses', 'foo'],
+            ['2013',  1000,      400, 100],
+            ['2014',  1170,      460, 100],
+            ['2015',  660,       1120, 100],
+            ['2016',  1030,      540,200]
         ]);
 
         var options = {

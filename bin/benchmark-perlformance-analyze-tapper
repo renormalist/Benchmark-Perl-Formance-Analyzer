@@ -1,6 +1,6 @@
 #! /usr/bin/perl
 # PODNAME: benchmark-perlformance-analyzer-tapper
-# ABSTRACT: Benchmark::Perl::Formance - process results (Tapper frontent)
+# ABSTRACT: process benchmark results
 
 use 5.010;
 use strict;
@@ -10,6 +10,8 @@ use Benchmark::Perl::Formance::Analyzer::Tapper;
 my $analyzer = Benchmark::Perl::Formance::Analyzer::Tapper->new_with_options;
 
 $analyzer->run;
+
+__END__
 
 =pod
 
@@ -24,36 +26,12 @@ C<benchmark-perlformance --tapper>.
 
 Usage:
 
-  $ benchmark-perlformance-process-tapper --localdir=path/to/results
+  $ benchmark-perlformance-process-tapper --subdir=path/to/results
 
 It finds all files below the given subdirectory which match one of the
 supported formats C<json> or C<yaml>, and processes their data.
 
-=head1 OPTIONS
-
-There are some options available.
-
-=over 4
-
-=item --help
-
-=item -h
-
-prints out a help page.
-
-=item --localdir=path/to/results
-
-Search local files under that given subdir. Can be repeated.
-
-=item --version
-
-Print version.
-
-=item --verbose
-
-Sets verbosity.
-
-=back
+Please see C<benchmark-perlformance-analyze-tapper --help> for documentation.
 
 =cut
 
