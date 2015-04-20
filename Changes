@@ -1,5 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.001     2015-04-20
         - process Benchmark::Perl::Formance results
           (Tapper BenchmarkAnythingData format)
