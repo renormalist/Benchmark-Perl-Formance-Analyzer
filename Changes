@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.002     2015-04-21
         - new option --whitelist to only process those metrics
 
 0.001     2015-04-20
