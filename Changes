@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - new option --whitelist to only process those metrics
 
 0.001     2015-04-20
         - process Benchmark::Perl::Formance results
