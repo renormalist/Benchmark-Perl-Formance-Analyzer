@@ -17,6 +17,7 @@ with 'MooseX::Getopt::Usage',
 has 'subdir'     => ( is => 'rw', isa => 'ArrayRef', documentation => "where to search for benchmark results", default => sub{[]} );
 has 'name'       => ( is => 'rw', isa => 'ArrayRef', documentation => "file name pattern" );
 has 'verbose'    => ( is => 'rw', isa => 'Bool',     documentation => "Switch on verbosity" );
+has 'whitelist'  => ( is => 'rw', isa => 'Str',      documentation => "metricss to use (regular expression)" );
 has 'blacklist'  => ( is => 'rw', isa => 'Str',      documentation => "metrics to skip (regular expression)" );
 has '_RESULTS'   => ( is => 'rw', isa => 'ArrayRef', default => sub{[]} );
 
@@ -99,8 +100,11 @@ sub _process_results
         my %results_by_VERSION;
         push @{$results_by_VERSION{$_->{perlconfig_version}}}, $_ foreach @$results;
 
+        my $whitelist = $self->whitelist;
         my $blacklist = $self->blacklist;
-        my @metrics  = grep { not $blacklist or $_ !~ qr/$blacklist/ } sort keys %results_by_NAME;
+        my @metrics  = grep { not $blacklist or $_ !~ qr/$blacklist/ }
+                       grep { not $whitelist or $_ =~ qr/$whitelist/ }
+                       sort keys %results_by_NAME;
         my @versions = sort {version->parse($a) <=> version->parse($b)} keys %results_by_VERSION;
 
         my %RESULTS;
