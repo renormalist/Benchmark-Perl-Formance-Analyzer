@@ -83,6 +83,38 @@ sub _analyze_single_file
         return @chunks;
 }
 
+sub _print_to_template
+{
+        my ($self, $RESULTMATRIX) = @_;
+
+        require JSON;
+        require Template;
+        require File::ShareDir;
+
+        # template
+        my $filename;
+        my $name = 'google-chart-area.tt';
+        my @subdirs = ( "share", File::ShareDir::dist_dir('Benchmark-Perl-Formance-Analyzer') );
+        my $subdir; # pre-declare to use last assignment
+        foreach $subdir (@subdirs) {
+                $filename = "$subdir/$name";
+                last if -e $filename;
+        }
+
+        # fill
+        my $tt_cfg = {
+                      INCLUDE_PATH => $subdir, # or list ref
+                      INTERPOLATE  => 0,       # expand "$var" in plain text
+                      POST_CHOMP   => 0,       # cleanup whitespace
+                      EVAL_PERL    => 0,       # evaluate Perl code blocks
+                     };
+
+        # print
+        my $tt = Template->new($tt_cfg);
+        my $vars = { RESULTMATRIX  => JSON->new->pretty->encode( $RESULTMATRIX ) };
+        $tt->process($filename, $vars); # to STDOUT
+}
+
 sub _process_results
 {
         my ($self, $results) = @_;
@@ -168,8 +200,7 @@ sub _process_results
                 }
         }
 
-        require JSON;
-        print JSON->new->pretty->encode( $RESULTMATRIX );
+        $self->_print_to_template($RESULTMATRIX);
 }
 
 sub _analyze_localfiles
