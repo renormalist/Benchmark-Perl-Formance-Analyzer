@@ -20,6 +20,7 @@ has 'verbose'    => ( is => 'rw', isa => 'Bool',     documentation => "Switch on
 has 'whitelist'  => ( is => 'rw', isa => 'Str',      documentation => "metricss to use (regular expression)" );
 has 'blacklist'  => ( is => 'rw', isa => 'Str',      documentation => "metrics to skip (regular expression)" );
 has '_RESULTS'   => ( is => 'rw', isa => 'ArrayRef', default => sub{[]} );
+has 'dropnull'   => ( is => 'rw', isa => 'Bool',     documentation => "Drop metrics with null values", default => 1 );
 
 use namespace::clean -except => 'meta';
 __PACKAGE__->meta->make_immutable;
@@ -126,6 +127,18 @@ sub _process_results
                         $RESULTS{$NAME}{$v} = "$mean";
                 }
                 say "" if $self->verbose;
+        }
+
+        if ($self->dropnull)
+        {
+                my @clean_metrics;
+        METRIC: foreach my $m (@metrics) {
+                        foreach my $v (@versions) {
+                                next METRIC if not $RESULTS{$m}{$v};
+                        }
+                        push @clean_metrics, $m;
+                }
+                @metrics = @clean_metrics;
         }
 
         # ['VERSION', 'dpath', 'Mem', 'Fib'],
