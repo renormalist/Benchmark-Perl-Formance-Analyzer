@@ -1,5 +1,5 @@
 package Benchmark::Perl::Formance::Analyzer::Tapper;
-# ABSTRACT: Benchmark::Perl::Formance - analyze results
+# ABSTRACT: Benchmark::Perl::Formance - analyze results using Tapper backend store
 
 use 5.010;
 
