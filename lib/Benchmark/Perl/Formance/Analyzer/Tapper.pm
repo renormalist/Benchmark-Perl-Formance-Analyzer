@@ -43,7 +43,7 @@ sub print_version
         }
 };
 
-sub _analyze_single_file
+sub _fetch_from_single_file
 {
         my ($self, $file) = @_;
 
@@ -203,6 +203,18 @@ sub _process_results
         $self->_print_to_template($RESULTMATRIX);
 }
 
+sub _filter_perl5_metrics_only
+{
+        grep { $_->{NAME} =~ /^perlformance.perl5./ } @_;
+}
+
+sub _filter_scope
+{
+        # use64bitall, usethreads, etc, but generically, of course...
+        grep { $_->{use64bitall} eq $filter->{use64bitall} }
+        grep { $_->{usethreads}  eq $filter->{usethreads}  } @_;
+}
+
 sub _analyze_localfiles
 {
         my ($self) = @_;
@@ -212,9 +224,10 @@ sub _analyze_localfiles
         my @results;
         my @pattern  = @{$self->name || ["*.yaml", "*.json"]};
         my @files    = File::Find::Rule->file->name(@pattern)->in(@{$self->subdir});
-        push @results, $self->_analyze_single_file($_) foreach @files;
+        push @results, $self->_fetch_from_single_file($_) foreach @files;
 
-        @results = grep { $_->{NAME} =~ /^perlformance.perl5./ } @results;
+        @results = _filter_perl5_metrics_only @results;
+        @results = _filter_scope @results;
         $self->_process_results(\@results);
 }
 
