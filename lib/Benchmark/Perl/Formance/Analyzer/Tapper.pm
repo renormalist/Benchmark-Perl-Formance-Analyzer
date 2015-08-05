@@ -95,7 +95,7 @@ sub _print_to_template
         my $filename;
         my $name = 'google-chart-area.tt';
         my @subdirs = ( "share", File::ShareDir::dist_dir('Benchmark-Perl-Formance-Analyzer') );
-        my $subdir; # pre-declare to use last assignment
+        my $subdir; # pre-declare to later re-use last assignment
         foreach $subdir (@subdirs) {
                 $filename = "$subdir/$name";
                 last if -e $filename;
