@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# PODNAME: benchmark-perlformance-analyzer-tapper
+# PODNAME: benchmark-perlformance-analyze-tapper
 # ABSTRACT: process benchmark results
 
 use 5.010;
@@ -26,7 +26,7 @@ C<benchmark-perlformance --tapper>.
 
 Usage:
 
-  $ benchmark-perlformance-process-tapper --subdir=path/to/results
+  $ benchmark-perlformance-analyze-tapper --subdir=path/to/results
 
 It finds all files below the given subdirectory which match one of the
 supported formats C<json> or C<yaml>, and processes their data.
