@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - first chart generation
+        - currently HTML with Javascript google charts
 
 0.002     2015-04-21
         - new option --whitelist to only process those metrics
