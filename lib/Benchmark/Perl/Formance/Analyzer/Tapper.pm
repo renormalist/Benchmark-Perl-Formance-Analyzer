@@ -10,6 +10,9 @@ use Data::Dumper;
 use TryCatch;
 use version 0.77;
 use Data::Structure::Util 'unbless';
+use File::ShareDir 'dist_dir';
+use BenchmarkAnything::Storage::Frontend::Lib;
+use Template;
 
 with 'MooseX::Getopt::Usage',
  'MooseX::Getopt::Usage::Role::Man';
@@ -17,17 +20,44 @@ with 'MooseX::Getopt::Usage',
 has 'subdir'     => ( is => 'rw', isa => 'ArrayRef', documentation => "where to search for benchmark results", default => sub{[]} );
 has 'name'       => ( is => 'rw', isa => 'ArrayRef', documentation => "file name pattern" );
 has 'verbose'    => ( is => 'rw', isa => 'Bool',     documentation => "Switch on verbosity" );
+has 'debug'      => ( is => 'rw', isa => 'Bool',     documentation => "Switch on debugging output" );
 has 'whitelist'  => ( is => 'rw', isa => 'Str',      documentation => "metricss to use (regular expression)" );
 has 'blacklist'  => ( is => 'rw', isa => 'Str',      documentation => "metrics to skip (regular expression)" );
 has '_RESULTS'   => ( is => 'rw', isa => 'ArrayRef', default => sub{[]} );
-has 'dropnull'   => ( is => 'rw', isa => 'Bool',     documentation => "Drop metrics with null values", default => 1 );
+has 'dropnull'   => ( is => 'rw', isa => 'Bool',     documentation => "Drop metrics with null values", default => 0 );
+has 'query'      => ( is => 'rw', isa => 'Str',      documentation => "Search query file or '-' for STDIN", default => "-" );
+has 'balib'      => ( is => 'rw',                    documentation => "where to search for benchmark results", default => sub { BenchmarkAnything::Storage::Frontend::Lib->new } );
+has 'template'   => ( is => 'rw', isa => 'Str',
+                      documentation => 'output template file',
+                      default => 'google-chart-area.tt',
+                      #default => 'google-chart-line.tt',
+                    );
+has 'tt'         => ( is => 'rw',
+                      documentation => "template renderer",
+                      default => sub
+                      {
+                              Template->new({
+                                             INCLUDE_PATH => dist_dir('Benchmark-Perl-Formance-Analyzer'), # or list ref
+                                             INTERPOLATE  => 0,       # expand "$var" in plain text
+                                             POST_CHOMP   => 0,       # cleanup whitespace
+                                             EVAL_PERL    => 0,       # evaluate Perl code blocks
+                                            });
+                      }
+                    );
+has 'x_key'       => ( is => 'rw', isa => 'Str',      documentation => "xAxis key", default => "perlconfig_version" );
+has 'x_type'      => ( is => 'rw', isa => 'Str',      documentation => "xAxis key", default => "version" ); # version, numeric, string, date
+has 'y_key'       => ( is => 'rw', isa => 'Str',      documentation => "xAxis key", default => "VALUE" );
+has 'y_type'      => ( is => 'rw', isa => 'Str',      documentation => "xAxis key", default => "numeric" );
+has 'aggregation' => ( is => 'rw', isa => 'Str',      documentation => "xAxis key", default => "avg" );     # sub entries of {stats}: avg, stdv, ci_95_lower, ci_95_upper
 
 use namespace::clean -except => 'meta';
 __PACKAGE__->meta->make_immutable;
 no Moose;
 
-use PDL;
-use PDL::Primitive;
+# use PDL::LiteF;
+# use PDL::NiceSlice;
+require PDL::Stats::Basic;
+require PDL::Ufunc;
 
 sub print_version
 {
@@ -35,13 +65,13 @@ sub print_version
 
         if ($self->verbose)
         {
-                print "Benchmark::Perl::Formance::Analyzer version $Benchmark::Perl::Formance::Analyzer::VERSION\n";
+                print STDERR "Benchmark::Perl::Formance::Analyzer version $Benchmark::Perl::Formance::Analyzer::VERSION\n";
         }
         else
         {
-                print $Benchmark::Perl::Formance::Analyzer::VERSION, "\n";
+                print STDERR $Benchmark::Perl::Formance::Analyzer::VERSION, "\n";
         }
-};
+}
 
 sub _fetch_from_single_file
 {
@@ -50,7 +80,7 @@ sub _fetch_from_single_file
         my $data;
         my @chunks;
 
-        say "- $file" if $self->verbose;
+        say STDERR "- $file" if $self->verbose;
 
         try {
                 if ($file =~ /ya?ml$/)
@@ -78,9 +108,28 @@ sub _fetch_from_single_file
                 }
                 @chunks = dpath("//BenchmarkAnythingData/*/NAME/..")->match($data);
         } catch($err) {
-                say "  ERROR: $file : $err" if $self->verbose;
-        };
+                say STDERR "  ERROR: $file : $err" if $self->verbose;
+        }
+        ;
         return @chunks;
+}
+
+sub _tt_filename
+{
+        my ($self) = @_;
+
+        dist_dir('Benchmark-Perl-Formance-Analyzer').'/'.$self->template;
+
+        # # template
+        # my $filename;
+
+        # # include paths
+        # my @subdirs = ( "share",  );
+        # my $subdir; # pre-declare to later re-use last assignment
+        # foreach $subdir (@subdirs) {
+        #         last if -e $filename;
+        # }
+        # return $filename;
 }
 
 sub _print_to_template
@@ -88,155 +137,279 @@ sub _print_to_template
         my ($self, $RESULTMATRIX) = @_;
 
         require JSON;
-        require Template;
-        require File::ShareDir;
-
-        # template
-        my $filename;
-        my $name = 'google-chart-area.tt';
-        my @subdirs = ( "share", File::ShareDir::dist_dir('Benchmark-Perl-Formance-Analyzer') );
-        my $subdir; # pre-declare to later re-use last assignment
-        foreach $subdir (@subdirs) {
-                $filename = "$subdir/$name";
-                last if -e $filename;
-        }
-
-        # fill
-        my $tt_cfg = {
-                      INCLUDE_PATH => $subdir, # or list ref
-                      INTERPOLATE  => 0,       # expand "$var" in plain text
-                      POST_CHOMP   => 0,       # cleanup whitespace
-                      EVAL_PERL    => 0,       # evaluate Perl code blocks
-                     };
 
         # print
-        my $tt = Template->new($tt_cfg);
-        my $vars = { RESULTMATRIX  => JSON->new->pretty->encode( $RESULTMATRIX ) };
-        $tt->process($filename, $vars); # to STDOUT
+        my $vars = {
+                    RESULTMATRIX     => JSON->new->pretty->encode( $RESULTMATRIX ),
+
+                    title            => 'Perl::Formance benchmarks',
+                    x_key            => $self->x_key,
+                    isStacked        => "false",  # true, false, 'relative'
+                    interpolateNulls => "true",   # true, false -- only works with isStacked=false
+                    areaOpacity      => 0.0,
+                   };
+
+        # to STDOUT
+        $self->tt->process($self->template, $vars)
+         or die $self->tt->error."\n";
+}
+
+# ASSUMPTION: there is only one NAME per chartline
+# ASSUMPTION: titles are unique
+#
+# INPUT:
+# [ title: dpath-T-n64
+#   {N:dpath, V:1000, version:2013},
+#   {N:dpath, V:1170, version:2014},
+#   {N:dpath,  V:660, version:2015},
+#   {N:dpath, V:1030, version:2016},
+# ],
+# [ title: Mem-nT-n64
+#   {N:Mem,    V:400, version:2013},
+#   {N:Mem,    V:460, version:2014},
+#   {N:Mem,   V:1120, version:2015},
+#   {N:Mem,    V:540, version:2016},
+# ],
+# [ title: Fib-T-64
+#   {N:Fib,    V:100, version:2013},
+#   {N:Fib,    V:100, version:2014},
+#   {N:Fib,    V:100, version:2015},
+#   {N:Fib,    V:200, version:2016},
+# ]
+#
+# OUTPUT:
+#
+# ['VERSION', 'dpath', 'Mem', 'Fib'],
+# ['2013',      1000,   400,   100],
+# ['2014',      1170,   460,   100],
+# ['2015',       660,  1120,   100],
+# ['2016',      1030,   540,   200]
+
+sub multi_point_stats
+{
+        my ($self, $values) = @_;
+
+        my $data = PDL::Core::pdl(@$values);
+        my $avg  = PDL::Stats::Basic::average($data);
+        return {
+                avg         => PDL::Core::sclr($avg),
+                stdv        => PDL::Stats::Basic::stdv($data),
+                min         => PDL::Ufunc::min($data),
+                max         => PDL::Ufunc::max($data),
+                ci_95_lower => $avg - 1.96 * PDL::Stats::Basic::se($data),
+                ci_95_upper => $avg + 1.96 * PDL::Stats::Basic::se($data),
+               };
 }
 
 sub _process_results
 {
-        my ($self, $results) = @_;
+        my ($self, $chartlines) = @_;
 
+        my $x_key       = $self->x_key;
+        my $x_type      = $self->x_type;
+        my $y_key       = $self->y_key;
+        my $y_type      = $self->y_type;
+        my $aggregation = $self->aggregation;
 
-        # unused but keep for a while
-        my $order_by_version = sub { version->parse($a->{perlconfig_version}) <=> version->parse($b->{perlconfig_version}) };
-        my $order_by_VALUE   = sub { $a->{VALUE} <=> $b->{VALUE} };
-        my %ordering = ( version => $order_by_version,
-                         VALUE   => $order_by_VALUE,
-                       );
-
-        my %results_by_NAME;
-        push @{$results_by_NAME{$_->{NAME}}}, $_ foreach @$results;
-
-        my %results_by_VERSION;
-        push @{$results_by_VERSION{$_->{perlconfig_version}}}, $_ foreach @$results;
-
-        my $whitelist = $self->whitelist;
-        my $blacklist = $self->blacklist;
-        my @metrics  = grep { not $blacklist or $_ !~ qr/$blacklist/ }
-                       grep { not $whitelist or $_ =~ qr/$whitelist/ }
-                       sort keys %results_by_NAME;
-        my @versions = sort {version->parse($a) <=> version->parse($b)} keys %results_by_VERSION;
-
-        my %RESULTS;
-
-        foreach my $NAME (@metrics) {
-
-                my $sub_results = $results_by_NAME{$NAME};
-
-                say "# $NAME" if $self->verbose;
-                my %multi_values;
-                foreach my $r (@$sub_results) {
-                        say "  raw:", $r->{perlconfig_version}, ":", $r->{NAME}, ":", $r->{VALUE} if $self->verbose;
-                        push @{$multi_values{$r->{perlconfig_version}}}, $r->{VALUE};
-                }
-                foreach my $v (keys %multi_values) {
-                        my $pdl = PDL::Core::pdl($multi_values{$v});
-                        my ($mean,$prms,$median,$min,$max,$adev,$rms) = PDL::Primitive::stats($pdl);
-                        say "  avg:$v:$NAME:$mean($adev)" if $self->verbose;
-                        $RESULTS{$NAME}{$v} = "$mean";
-                }
-                say "" if $self->verbose;
-        }
-
-        if ($self->dropnull)
+        # from all chartlines collect values into buckets for the dimensions we need
+        #
+        # chartline = title
+        # x         = perlconfig_version
+        # y         = VALUE
+        my %VALUES;
+        foreach my $chartline (@$chartlines)
         {
-                my @clean_metrics;
-        METRIC: foreach my $m (@metrics) {
-                        foreach my $v (@versions) {
-                                next METRIC if not $RESULTS{$m}{$v};
-                        }
-                        push @clean_metrics, $m;
-                }
-                @metrics = @clean_metrics;
-        }
+                my $title     = $chartline->{title};
+                my $results   = $chartline->{results};
+                my $NAME      = $results->[0]{NAME};
 
-        # ['VERSION', 'dpath', 'Mem', 'Fib'],
-        # ['2013',  1000,      400,     100],
-        # ['2014',  1170,      460,     100],
-        # ['2015',  660,       1120,    100],
-        # ['2016',  1030,      540,     200]
+                say STDERR sprintf("* %-20s - %-40s", $title, $NAME) if $self->verbose;
 
-        my $RESULTMATRIX;
-
-        $RESULTMATRIX->[0][0] = 'VERSION';
-        foreach (0..$#metrics) {
-                my $m = $metrics[$_] || "undef";
-                $m =~ s/perlformance.perl5.//;
-                $RESULTMATRIX->[0][$_+1] = $m;
-        }
-
-        for (my $i=0; $i < @versions; $i++)
-        {
-                my $version = $versions[$i];
-
-                $RESULTMATRIX->[$i+1][0] = $version;
-                for (my $j=0; $j < @metrics; $j++)
+                foreach my $point (@$results)
                 {
-                        my $metric = $metrics[$j];
-                        $RESULTMATRIX->[$i+1][$j+1] = 0+($RESULTS{$metric}{$version} || 0);
+                        my $x = $point->{$x_key};
+                        my $y = $point->{$y_key};
+                        push @{$VALUES{$title}{$x}{values}}, $y; # maybe multiple for same X - average them later
                 }
         }
 
-        $self->_print_to_template($RESULTMATRIX);
+        # statistical aggregations of multi points
+        foreach my $title (keys %VALUES)
+        {
+                foreach my $x (keys %{$VALUES{$title}})
+                {
+                        my $multi_point_values     = $VALUES{$title}{$x}{values};
+                        $VALUES{$title}{$x}{stats} = $self->multi_point_stats($multi_point_values);
+                }
+        }
+
+        # find out all available x-values from all chartlines
+        my %all_x;
+        foreach my $title (keys %VALUES)
+        {
+                foreach my $x (keys %{$VALUES{$title}})
+                {
+                        $all_x{$x} = 1;
+                }
+        }
+        my @all_x = keys %all_x;
+
+        # drop complete chartlines if it has gaps on versions that the other chartlines provide values
+        my %clean_chartlines;
+        if ($self->dropnull) {
+                foreach my $title (keys %VALUES) {
+                        my $ok = 1;
+                        foreach my $x (@all_x) {
+                                #say STDERR "$title / $x: ".join(",", @{$VALUES{$title}{$x}{values} || []}) if $self->verbose;
+                                if (not @{$VALUES{$title}{$x}{values} || []}) {
+                                        say STDERR "skip: $title (missing values for $x)" if $self->verbose;
+                                        $ok = 0;
+                                }
+                        }
+                        if ($ok) {
+                                $clean_chartlines{$title} = 1;
+                                say STDERR "okay: $title" if $self->verbose;
+                        }
+                }
+        }
+
+        # intermediate debug output
+        foreach my $title (keys %VALUES)
+        {
+                foreach my $x (keys %{$VALUES{$title}})
+                {
+                        my $count = scalar @{$VALUES{$title}{$x}{values} || []} || 0;
+                        next if not $count;
+                        my $avg   = $VALUES{$title}{$x}{stats}{avg};
+                        my $stdv  = $VALUES{$title}{$x}{stats}{stdv};
+                        my $ci95l = $VALUES{$title}{$x}{stats}{ci_95_lower};
+                        my $ci95u = $VALUES{$title}{$x}{stats}{ci_95_upper};
+                        say STDERR sprintf("%-20s . %-7s . avg = %7.2f +- %5.2f (%3d points)", $title, $x, $avg, $stdv, $count) if $self->verbose;
+                }
+        }
+
+        # result data structure, as needed per chart type
+        my @RESULTMATRIX;
+
+        my @titles =
+         grep { !$self->dropnull or $clean_chartlines{$_} }    # dropnull
+          # sort by comparing value of latest version
+          # (only works when latest version has values for each chartline...)
+          # sort { $VALUES{$a}{$all_x[-1]}{stats}{$aggregation} <=> $VALUES{$b}{$all_x[-1]}{stats}{$aggregation} }
+          sort
+           keys %VALUES;
+
+        for (my $i=0; $i<@all_x; $i++)          # rows
+        {
+                my $x = $all_x[$i];
+                for (my $j=0; $j<@titles; $j++) # columns
+                {
+                        my $title = $titles[$j];
+                        my $value = $VALUES{$title}{$x}{stats}{$aggregation};
+                        $RESULTMATRIX[0]    [0]    = "VERSION"    if $i == 0 && $j == 0;
+                        $RESULTMATRIX[0]    [$j+1] = $title       if $i == 0;
+                        $RESULTMATRIX[$i+1] [0]    = $x           if            $j == 0;
+                        $RESULTMATRIX[$i+1] [$j+1] = $value ? (0+$value) : undef; # stringify, then numify PDL
+                }
+        }
+        return \@RESULTMATRIX;
 }
 
-sub _filter_perl5_metrics_only
-{
-        grep { $_->{NAME} =~ /^perlformance.perl5./ } @_;
-}
-
-sub _filter_scope
-{
-        # use64bitall, usethreads, etc, but generically, of course...
-        grep { $_->{use64bitall} eq $filter->{use64bitall} }
-        grep { $_->{usethreads}  eq $filter->{usethreads}  } @_;
-}
-
-sub _analyze_localfiles
+sub _get_queries
 {
         my ($self) = @_;
 
-        say "Process subdirs: ".join(":", @{$self->subdir}) if $self->verbose;
+        # list of queries inclusive description to be used later
+        return
+         [
+          {
+           title => "binarytrees-any",
+           query => { "where"    => [ ["=" , "NAME", "perlformance.perl5.Shootout.binarytrees" ],
+                                    ],
+                       "select"   => [ "NAME", "VALUE", "perlconfig_version" ],
+                      "order_by" => [ "VALUE_ID" ],
+                    },
+          },
+          {
+           title => "fasta-any",
+           query => { "where"    => [ ["=" , "NAME", "perlformance.perl5.Shootout.fasta" ],
+                                    ],
+                      "select"   => [ "NAME", "VALUE", "perlconfig_version" ],
+                      "order_by" => [ "VALUE_ID" ],
+                    },
+          },
+          {
+           title => "nbody-any",
+           query => { "where"    => [ ["=" , "NAME", "perlformance.perl5.Shootout.nbody" ],
+                                    ],
+                      "select"   => [ "NAME", "VALUE", "perlconfig_version" ],
+                      "order_by" => [ "VALUE_ID" ],
+                    },
+          },
+          {
+           title => "spectralnorm-any",
+           query => { "where"    => [ ["=" , "NAME", "perlformance.perl5.Shootout.spectralnorm" ],
+                                    ],
+                      "select"   => [ "NAME", "VALUE", "perlconfig_version" ],
+                      "order_by" => [ "VALUE_ID" ],
+                    },
+          },
+          {
+           title => "dpath-any",
+           query => { "where"    => [ ["=" , "NAME", "perlformance.perl5.DPath.dpath" ],
+                                    ],
+                       "select"   => [ "NAME", "VALUE", "perlconfig_version" ],
+                      "order_by" => [ "VALUE_ID" ],
+                    },
+          },
+          {
+           title => "viv-any",
+           query => { "where"    => [ ["=" , "NAME", "perlformance.perl5.P6STD.viv" ],
+                                      [">" , "VALUE", 1 ], # ignore bogus low values
+                                    ],
+                       "select"   => [ "NAME", "VALUE", "perlconfig_version" ],
+                      "order_by" => [ "VALUE_ID" ],
+                    },
+          },
+          {
+           title => "threadstorm-any",
+           query => { "where"    => [ ["=" , "NAME", "perlformance.perl5.Threads.threadstorm" ],
+                                    ],
+                       "select"   => [ "NAME", "VALUE", "perlconfig_version" ],
+                      "order_by" => [ "VALUE_ID" ],
+                    },
+          },
+         ];
+}
+
+sub _search
+{
+        my ($self) = @_;
+
+        $self->balib->connect;
 
         my @results;
-        my @pattern  = @{$self->name || ["*.yaml", "*.json"]};
-        my @files    = File::Find::Rule->file->name(@pattern)->in(@{$self->subdir});
-        push @results, $self->_fetch_from_single_file($_) foreach @files;
+        foreach my $q (@{$self->_get_queries})
+        {
+                push @results,
+                {
+                 title   => $q->{title},
+                 results => $self->balib->search($q->{query}),
+                };
+        }
 
-        @results = _filter_perl5_metrics_only @results;
-        @results = _filter_scope @results;
-        $self->_process_results(\@results);
+        return \@results;
 }
 
 sub run
 {
         my ($self) = @_;
 
-        $self->_analyze_localfiles if @{$self->subdir};
-        say "Done." if $self->verbose;
+        my $results       = $self->_search();
+        my $result_matrix = $self->_process_results($results);
+        $self->_print_to_template($result_matrix);
+
+        say STDERR "Done." if $self->verbose;
 
         return;
 }
