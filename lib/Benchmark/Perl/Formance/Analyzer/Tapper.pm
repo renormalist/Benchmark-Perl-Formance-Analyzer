@@ -157,12 +157,15 @@ sub _process_results
         # chartline = title
         # x         = perlconfig_version
         # y         = VALUE
+        my @titles;
         my %VALUES;
         foreach my $chartline (@$chartlines)
         {
                 my $title     = $chartline->{title};
                 my $results   = $chartline->{results};
                 my $NAME      = $results->[0]{NAME};
+
+                push @titles, $title;
 
                 say STDERR sprintf("* %-20s - %-40s", $title, $NAME) if $self->verbose;
 
@@ -232,13 +235,7 @@ sub _process_results
         # result data structure, as needed per chart type
         my @RESULTMATRIX;
 
-        my @titles =
-         grep { !$self->dropnull or $clean_chartlines{$_} }    # dropnull
-          # sort by comparing value of latest version
-          # (only works when latest version has values for each chartline...)
-          # sort { $VALUES{$a}{$all_x[-1]}{stats}{$aggregation} <=> $VALUES{$b}{$all_x[-1]}{stats}{$aggregation} }
-          sort
-           keys %VALUES;
+        @titles = grep { !$self->dropnull or $clean_chartlines{$_} } @titles; # dropnull
 
         for (my $i=0; $i<@all_x; $i++)          # rows
         {
