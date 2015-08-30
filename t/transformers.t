@@ -77,8 +77,6 @@ $expected = [
 $output = $analyzer->_process_results($input);
 cmp_deeply($output, $expected, "data transformation - google areachart");
 
-
-
 # Finish
 ok(1, "dummy");
 done_testing;

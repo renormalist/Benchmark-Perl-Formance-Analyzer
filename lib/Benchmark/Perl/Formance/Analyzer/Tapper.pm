@@ -19,6 +19,7 @@ with 'MooseX::Getopt::Usage',
 
 has 'subdir'     => ( is => 'rw', isa => 'ArrayRef', documentation => "where to search for benchmark results", default => sub{[]} );
 has 'name'       => ( is => 'rw', isa => 'ArrayRef', documentation => "file name pattern" );
+has 'outfile'    => ( is => 'rw', isa => 'Str',      documentation => "output file" );
 has 'verbose'    => ( is => 'rw', isa => 'Bool',     documentation => "Switch on verbosity" );
 has 'debug'      => ( is => 'rw', isa => 'Bool',     documentation => "Switch on debugging output" );
 has 'whitelist'  => ( is => 'rw', isa => 'Str',      documentation => "metricss to use (regular expression)" );
@@ -95,7 +96,7 @@ sub _print_to_template
          or die $self->tt->error."\n";
 }
 
-sub multi_point_stats
+sub _multi_point_stats
 {
         my ($self, $values) = @_;
 
@@ -183,7 +184,7 @@ sub _process_results
                 foreach my $x (keys %{$VALUES{$title}})
                 {
                         my $multi_point_values     = $VALUES{$title}{$x}{values};
-                        $VALUES{$title}{$x}{stats} = $self->multi_point_stats($multi_point_values);
+                        $VALUES{$title}{$x}{stats} = $self->_multi_point_stats($multi_point_values);
                 }
         }
 
@@ -196,13 +197,12 @@ sub _process_results
                         $all_x{$x} = 1;
                 }
         }
-        my @all_x = keys %all_x;  # TODO: sort according to x_type, currently assume "version"
-
-        my @all_x =
-         $x_type eq 'version' ? sort {version->parse($a) <=> version->parse($b)} @all_x
+        my @all_x = keys %all_x;
+        @all_x =
+         $x_type eq 'version'    ? sort {version->parse($a) <=> version->parse($b)} @all_x
           : $x_type eq 'numeric' ? sort {$a <=> $b} @all_x
            : $x_type eq 'string' ? sort {$a cmp $b} @all_x
-            : $x_type eq 'date' ? sort { die "TODO: sort by date" ; $a cmp $b} @all_x
+            : $x_type eq 'date'  ? sort { die "TODO: sort by date" ; $a cmp $b} @all_x
              : @all_x;
 
         # drop complete chartlines if it has gaps on versions that the other chartlines provide values
