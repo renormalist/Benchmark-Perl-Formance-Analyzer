@@ -93,7 +93,11 @@ sub _print_to_template
 
 sub _multi_point_stats
 {
-        my ($self, $values) = @_;
+        my ($values) = @_;
+
+        require PDL::Stats::Basic;
+        require PDL::Ufunc;
+        require PDL::Core;
 
         my $data = PDL::Core::pdl(@$values);
         my $avg  = PDL::Stats::Basic::average($data);
@@ -140,13 +144,15 @@ sub _multi_point_stats
 
 sub _process_results
 {
-        my ($self, $chartlines) = @_;
+        my ($chartlines, $options) = @_;
 
-        my $x_key       = $self->x_key;
-        my $x_type      = $self->x_type;
-        my $y_key       = $self->y_key;
-        my $y_type      = $self->y_type;
-        my $aggregation = $self->aggregation;
+        my $x_key       = $options->{x_key};
+        my $x_type      = $options->{x_type};
+        my $y_key       = $options->{y_key};
+        my $y_type      = $options->{y_type};
+        my $aggregation = $options->{aggregation};
+        my $verbose     = $options->{verbose};
+        my $dropnull    = $options->{dropnull};
 
         # from all chartlines collect values into buckets for the dimensions we need
         #
@@ -163,7 +169,7 @@ sub _process_results
 
                 push @titles, $title;
 
-                say STDERR sprintf("* %-20s - %-40s", $title, $NAME) if $self->verbose;
+                say STDERR sprintf("* %-20s - %-40s", $title, $NAME) if $verbose;
 
                 foreach my $point (@$results)
                 {
@@ -179,7 +185,7 @@ sub _process_results
                 foreach my $x (keys %{$VALUES{$title}})
                 {
                         my $multi_point_values     = $VALUES{$title}{$x}{values};
-                        $VALUES{$title}{$x}{stats} = $self->_multi_point_stats($multi_point_values);
+                        $VALUES{$title}{$x}{stats} = _multi_point_stats($multi_point_values);
                 }
         }
 
@@ -202,19 +208,18 @@ sub _process_results
 
         # drop complete chartlines if it has gaps on versions that the other chartlines provide values
         my %clean_chartlines;
-        if ($self->dropnull) {
+        if ($dropnull) {
                 foreach my $title (keys %VALUES) {
                         my $ok = 1;
                         foreach my $x (@all_x) {
-                                #say STDERR "$title / $x: ".join(",", @{$VALUES{$title}{$x}{values} || []}) if $self->verbose;
                                 if (not @{$VALUES{$title}{$x}{values} || []}) {
-                                        say STDERR "skip: $title (missing values for $x)" if $self->verbose;
+                                        say STDERR "skip: $title (missing values for $x)" if $verbose;
                                         $ok = 0;
                                 }
                         }
                         if ($ok) {
                                 $clean_chartlines{$title} = 1;
-                                say STDERR "okay: $title" if $self->verbose;
+                                say STDERR "okay: $title" if $verbose;
                         }
                 }
         }
@@ -230,14 +235,14 @@ sub _process_results
                         my $stdv  = $VALUES{$title}{$x}{stats}{stdv};
                         my $ci95l = $VALUES{$title}{$x}{stats}{ci_95_lower};
                         my $ci95u = $VALUES{$title}{$x}{stats}{ci_95_upper};
-                        say STDERR sprintf("%-20s . %-7s . avg = %7.2f +- %5.2f (%3d points)", $title, $x, $avg, $stdv, $count) if $self->verbose;
+                        say STDERR sprintf("%-20s . %-7s . avg = %7.2f +- %5.2f (%3d points)", $title, $x, $avg, $stdv, $count) if $verbose;
                 }
         }
 
         # result data structure, as needed per chart type
         my @RESULTMATRIX;
 
-        @titles = grep { !$self->dropnull or $clean_chartlines{$_} } @titles; # dropnull
+        @titles = grep { !$dropnull or $clean_chartlines{$_} } @titles; # dropnull
 
         for (my $i=0; $i<@all_x; $i++)          # rows
         {
@@ -345,8 +350,16 @@ sub run
 {
         my ($self) = @_;
 
+        my $options = {
+                       x_key       => $self->x_key,
+                       x_type      => $self->x_type,
+                       y_key       => $self->y_key,
+                       y_type      => $self->y_type,
+                       aggregation => $self->aggregation,
+                       verbose     => $self->verbose,
+                      };
         my $results       = $self->_search();
-        my $result_matrix = $self->_process_results($results);
+        my $result_matrix = _process_results($results, $options);
         $self->_print_to_template($result_matrix);
 
         say STDERR "Done." if $self->verbose;
