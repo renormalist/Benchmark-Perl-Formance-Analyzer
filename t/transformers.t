@@ -14,28 +14,28 @@ my $expected;
 my $analyzer = Benchmark::Perl::Formance::Analyzer::Tapper->new_with_options;
 
 $input = [
-          { title => "dpath-T-n64",
+          { title   => "dpath-T-n64",
             results => [
-                        {NAME => "dpath", VALUE => 1000, version => "2.0.13"},
-                        {NAME => "dpath", VALUE => 1170, version => "2.0.14"},
-                        {NAME => "dpath", VALUE =>  660, version => "2.0.15"},
-                        {NAME => "dpath", VALUE => 1030, version => "2.0.16"},
+                        {NAME => "dpath", VALUE => 1000, perlconfig_version => "2.0.13"},
+                        {NAME => "dpath", VALUE => 1170, perlconfig_version => "2.0.14"},
+                        {NAME => "dpath", VALUE =>  660, perlconfig_version => "2.0.15"},
+                        {NAME => "dpath", VALUE => 1030, perlconfig_version => "2.0.16"},
                        ],
           },
-          { title => "Mem-nT-n64",
+          { title   => "Mem-nT-n64",
             results => [
-                        {NAME => "Mem",   VALUE =>  400, version => "2.0.13"},
-                        {NAME => "Mem",   VALUE =>  460, version => "2.0.14"},
-                        {NAME => "Mem",   VALUE => 1120, version => "2.0.15"},
-                        {NAME => "Mem",   VALUE =>  540, version => "2.0.16"},
+                        {NAME => "Mem",   VALUE =>  400, perlconfig_version => "2.0.13"},
+                        {NAME => "Mem",   VALUE =>  460, perlconfig_version => "2.0.14"},
+                        {NAME => "Mem",   VALUE => 1120, perlconfig_version => "2.0.15"},
+                        {NAME => "Mem",   VALUE =>  540, perlconfig_version => "2.0.16"},
                        ],
           },
-          { title => "Fib-T-64",
+          { title   => "Fib-T-64",
             results => [
-                        {NAME => "Fib",   VALUE => 100, version => "2.0.13"},
-                        {NAME => "Fib",   VALUE => 100, version => "2.0.14"},
-                        {NAME => "Fib",   VALUE => 100, version => "2.0.15"},
-                        {NAME => "Fib",   VALUE => 200, version => "2.0.16"},
+                        {NAME => "Fib",   VALUE => 100, perlconfig_version => "2.0.13"},
+                        {NAME => "Fib",   VALUE => 100, perlconfig_version => "2.0.14"},
+                        {NAME => "Fib",   VALUE => 100, perlconfig_version => "2.0.15"},
+                        {NAME => "Fib",   VALUE => 200, perlconfig_version => "2.0.16"},
                        ],
           },
          ];
