@@ -196,7 +196,14 @@ sub _process_results
                         $all_x{$x} = 1;
                 }
         }
-        my @all_x = keys %all_x;
+        my @all_x = keys %all_x;  # TODO: sort according to x_type, currently assume "version"
+
+        my @all_x =
+         $x_type eq 'version' ? sort {version->parse($a) <=> version->parse($b)} @all_x
+          : $x_type eq 'numeric' ? sort {$a <=> $b} @all_x
+           : $x_type eq 'string' ? sort {$a cmp $b} @all_x
+            : $x_type eq 'date' ? sort { die "TODO: sort by date" ; $a cmp $b} @all_x
+             : @all_x;
 
         # drop complete chartlines if it has gaps on versions that the other chartlines provide values
         my %clean_chartlines;
