@@ -37,7 +37,7 @@ has 'tt'         => ( is => 'rw',
                       default => sub
                       {
                               Template->new({
-                                             INCLUDE_PATH => dist_dir('Benchmark-Perl-Formance-Analyzer'), # or list ref
+                                             INCLUDE_PATH => dist_dir('Benchmark-Perl-Formance-Analyzer')."/templates", # or list ref
                                              INTERPOLATE  => 0,       # expand "$var" in plain text
                                              POST_CHOMP   => 0,       # cleanup whitespace
                                              EVAL_PERL    => 0,       # evaluate Perl code blocks
