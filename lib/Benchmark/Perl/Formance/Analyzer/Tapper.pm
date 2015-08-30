@@ -376,10 +376,7 @@ C<benchmark-perlformance --tapper>.
 
 Usage:
 
-  $ benchmark-perlformance-process-tapper --subdir=path/to/results
-
-It finds all files below the given subdirectory which match one of the
-supported formats C<json> or C<yaml>, and processes their data.
+  $ benchmark-perlformance-process-tapper
 
 =head1 METHODS
 
