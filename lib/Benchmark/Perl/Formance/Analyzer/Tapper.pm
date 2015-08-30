@@ -45,20 +45,15 @@ has 'tt'         => ( is => 'rw',
                                             });
                       }
                     );
-has 'x_key'       => ( is => 'rw', isa => 'Str',      documentation => "xAxis key", default => "perlconfig_version" );
-has 'x_type'      => ( is => 'rw', isa => 'Str',      documentation => "xAxis key", default => "version" ); # version, numeric, string, date
-has 'y_key'       => ( is => 'rw', isa => 'Str',      documentation => "xAxis key", default => "VALUE" );
-has 'y_type'      => ( is => 'rw', isa => 'Str',      documentation => "xAxis key", default => "numeric" );
-has 'aggregation' => ( is => 'rw', isa => 'Str',      documentation => "xAxis key", default => "avg" );     # sub entries of {stats}: avg, stdv, ci_95_lower, ci_95_upper
+has 'x_key'       => ( is => 'rw', isa => 'Str',      documentation => "x-axis key",  default => "perlconfig_version" );
+has 'x_type'      => ( is => 'rw', isa => 'Str',      documentation => "x-axis type", default => "version" ); # version, numeric, string, date
+has 'y_key'       => ( is => 'rw', isa => 'Str',      documentation => "y-axis key",  default => "VALUE" );
+has 'y_type'      => ( is => 'rw', isa => 'Str',      documentation => "y-axis type", default => "numeric" );
+has 'aggregation' => ( is => 'rw', isa => 'Str',      documentation => "which aggregation to use (avg, stdv, ci_95_lower, ci_95_upper)", default => "avg" );     # sub entries of {stats}: avg, stdv, ci_95_lower, ci_95_upper
 
 use namespace::clean -except => 'meta';
 __PACKAGE__->meta->make_immutable;
 no Moose;
-
-# use PDL::LiteF;
-# use PDL::NiceSlice;
-require PDL::Stats::Basic;
-require PDL::Ufunc;
 
 sub print_version
 {
