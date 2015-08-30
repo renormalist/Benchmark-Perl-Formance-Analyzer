@@ -95,6 +95,22 @@ sub _print_to_template
          or die $self->tt->error."\n";
 }
 
+sub multi_point_stats
+{
+        my ($self, $values) = @_;
+
+        my $data = PDL::Core::pdl(@$values);
+        my $avg  = PDL::Stats::Basic::average($data);
+        return {
+                avg         => PDL::Core::sclr($avg),
+                stdv        => PDL::Stats::Basic::stdv($data),
+                min         => PDL::Ufunc::min($data),
+                max         => PDL::Ufunc::max($data),
+                ci_95_lower => $avg - 1.96 * PDL::Stats::Basic::se($data),
+                ci_95_upper => $avg + 1.96 * PDL::Stats::Basic::se($data),
+               };
+}
+
 # ASSUMPTION: there is only one NAME per chartline
 # ASSUMPTION: titles are unique
 #
@@ -125,22 +141,6 @@ sub _print_to_template
 # ['2014',      1170,   460,   100],
 # ['2015',       660,  1120,   100],
 # ['2016',      1030,   540,   200]
-
-sub multi_point_stats
-{
-        my ($self, $values) = @_;
-
-        my $data = PDL::Core::pdl(@$values);
-        my $avg  = PDL::Stats::Basic::average($data);
-        return {
-                avg         => PDL::Core::sclr($avg),
-                stdv        => PDL::Stats::Basic::stdv($data),
-                min         => PDL::Ufunc::min($data),
-                max         => PDL::Ufunc::max($data),
-                ci_95_lower => $avg - 1.96 * PDL::Stats::Basic::se($data),
-                ci_95_upper => $avg + 1.96 * PDL::Stats::Basic::se($data),
-               };
-}
 
 sub _process_results
 {
