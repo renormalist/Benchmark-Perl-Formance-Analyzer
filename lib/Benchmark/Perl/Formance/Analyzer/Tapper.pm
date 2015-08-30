@@ -73,65 +73,6 @@ sub print_version
         }
 }
 
-sub _fetch_from_single_file
-{
-        my ($self, $file) = @_;
-
-        my $data;
-        my @chunks;
-
-        say STDERR "- $file" if $self->verbose;
-
-        try {
-                if ($file =~ /ya?ml$/)
-                {
-                        # read
-                        local $/;
-                        open my $fh, '<', $file;
-                        my $yaml = <$fh>;
-                        close $fh;
-
-                        # remove YAMLish end marker
-                        $yaml =~ s/^\.{3}$//m;
-
-                        # load
-                        require YAML;
-                        $data = YAML::Load($yaml);
-                }
-                elsif ($file =~ /json$/)
-                {
-                        require JSON;
-                        local $/;
-                        open my $fh, '<', $file;
-                        $data = JSON::decode_json(<$fh>);
-                        close $fh;
-                }
-                @chunks = dpath("//BenchmarkAnythingData/*/NAME/..")->match($data);
-        } catch($err) {
-                say STDERR "  ERROR: $file : $err" if $self->verbose;
-        }
-        ;
-        return @chunks;
-}
-
-sub _tt_filename
-{
-        my ($self) = @_;
-
-        dist_dir('Benchmark-Perl-Formance-Analyzer').'/'.$self->template;
-
-        # # template
-        # my $filename;
-
-        # # include paths
-        # my @subdirs = ( "share",  );
-        # my $subdir; # pre-declare to later re-use last assignment
-        # foreach $subdir (@subdirs) {
-        #         last if -e $filename;
-        # }
-        # return $filename;
-}
-
 sub _print_to_template
 {
         my ($self, $RESULTMATRIX) = @_;
