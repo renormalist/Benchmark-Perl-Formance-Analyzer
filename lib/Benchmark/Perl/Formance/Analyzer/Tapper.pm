@@ -72,19 +72,18 @@ sub print_version
 
 sub _print_to_template
 {
-        my ($self, $RESULTMATRIX) = @_;
+        my ($self, $RESULTMATRIX, $options) = @_;
 
         require JSON;
 
         # print
         my $vars = {
                     RESULTMATRIX     => JSON->new->pretty->encode( $RESULTMATRIX ),
-
-                    title            => 'Perl::Formance benchmarks',
-                    x_key            => $self->x_key,
-                    isStacked        => "false",  # true, false, 'relative'
-                    interpolateNulls => "true",   # true, false -- only works with isStacked=false
-                    areaOpacity      => 0.0,
+                    title            => 'Perl::Formance '.$options->{charttitle},
+                    x_key            => $options->{x_key},
+                    isStacked        => $options->{isStacked},
+                    interpolateNulls => $options->{interpolateNulls},
+                    areaOpacity      => $options->{areaOpacity},
                    };
 
         # to STDOUT
@@ -272,12 +271,12 @@ sub _get_chart
 
 sub _search
 {
-        my ($self) = @_;
+        my ($self, $chartline_queries) = @_;
 
         $self->balib->connect;
 
         my @results;
-        foreach my $q (@{$self->_get_queries})
+        foreach my $q (@{$chartline_queries})
         {
                 push @results,
                 {
@@ -293,17 +292,25 @@ sub run
 {
         my ($self) = @_;
 
-        my $options = {
-                       x_key       => $self->x_key,
-                       x_type      => $self->x_type,
-                       y_key       => $self->y_key,
-                       y_type      => $self->y_type,
-                       aggregation => $self->aggregation,
-                       verbose     => $self->verbose,
-                      };
-        my $results       = $self->_search();
-        my $result_matrix = _process_results($results, $options);
-        $self->_print_to_template($result_matrix);
+        my $chart   = $self->_get_chart;
+        my $results = $self->_search($chart->{chartlines});
+        my $transform_options = {
+                                 x_key       => $self->x_key,
+                                 x_type      => $self->x_type,
+                                 y_key       => $self->y_key,
+                                 y_type      => $self->y_type,
+                                 aggregation => $self->aggregation,
+                                 verbose     => $self->verbose,
+                                };
+        my $result_matrix = _process_results($results, $transform_options);
+        my $render_options = {
+                              x_key            => $self->x_key,
+                              charttitle       => $chart->{charttitle},
+                              isStacked        => "false",  # true, false, 'relative'
+                              interpolateNulls => "true",   # true, false -- only works with isStacked=false
+                              areaOpacity      => 0.0,
+                             };
+        $self->_print_to_template($result_matrix, $render_options);
 
         say STDERR "Done." if $self->verbose;
 
