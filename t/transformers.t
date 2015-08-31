@@ -74,7 +74,15 @@ $expected = [
 ]
 ;
 
-$output = $analyzer->_process_results($input);
+my $options =  {
+                x_key       => "perlconfig_version",
+                x_type      => "version", # version, numeric, string, date
+                y_key       => "VALUE",
+                y_type      => "numeric",
+                aggregation => "avg", # sub entries of {stats}: avg, stdv, ci_95_lower, ci_95_upper
+                verbose     => 1,
+               };
+$output = Benchmark::Perl::Formance::Analyzer::Tapper::_process_results($input, $options);
 cmp_deeply($output, $expected, "data transformation - google areachart");
 
 # Finish
