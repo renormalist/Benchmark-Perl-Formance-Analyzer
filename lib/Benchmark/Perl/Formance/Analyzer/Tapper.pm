@@ -13,6 +13,7 @@ use Data::Structure::Util 'unbless';
 use File::ShareDir 'dist_dir';
 use BenchmarkAnything::Storage::Frontend::Lib;
 use Template;
+use JSON 'decode_json';
 
 with 'MooseX::Getopt::Usage',
  'MooseX::Getopt::Usage::Role::Man';
@@ -260,71 +261,13 @@ sub _process_results
         return \@RESULTMATRIX;
 }
 
-sub _get_queries
+sub _get_chart
 {
         my ($self) = @_;
 
-        # list of queries inclusive description to be used later
-        return
-         [
-          {
-           title => "binarytrees-any",
-           query => { "where"    => [ ["=" , "NAME", "perlformance.perl5.Shootout.binarytrees" ],
-                                    ],
-                       "select"   => [ "NAME", "VALUE", "perlconfig_version" ],
-                      "order_by" => [ "VALUE_ID" ],
-                    },
-          },
-          {
-           title => "fasta-any",
-           query => { "where"    => [ ["=" , "NAME", "perlformance.perl5.Shootout.fasta" ],
-                                    ],
-                      "select"   => [ "NAME", "VALUE", "perlconfig_version" ],
-                      "order_by" => [ "VALUE_ID" ],
-                    },
-          },
-          {
-           title => "nbody-any",
-           query => { "where"    => [ ["=" , "NAME", "perlformance.perl5.Shootout.nbody" ],
-                                    ],
-                      "select"   => [ "NAME", "VALUE", "perlconfig_version" ],
-                      "order_by" => [ "VALUE_ID" ],
-                    },
-          },
-          {
-           title => "spectralnorm-any",
-           query => { "where"    => [ ["=" , "NAME", "perlformance.perl5.Shootout.spectralnorm" ],
-                                    ],
-                      "select"   => [ "NAME", "VALUE", "perlconfig_version" ],
-                      "order_by" => [ "VALUE_ID" ],
-                    },
-          },
-          {
-           title => "dpath-any",
-           query => { "where"    => [ ["=" , "NAME", "perlformance.perl5.DPath.dpath" ],
-                                    ],
-                       "select"   => [ "NAME", "VALUE", "perlconfig_version" ],
-                      "order_by" => [ "VALUE_ID" ],
-                    },
-          },
-          {
-           title => "viv-any",
-           query => { "where"    => [ ["=" , "NAME", "perlformance.perl5.P6STD.viv" ],
-                                      [">" , "VALUE", 1 ], # ignore bogus low values
-                                    ],
-                       "select"   => [ "NAME", "VALUE", "perlconfig_version" ],
-                      "order_by" => [ "VALUE_ID" ],
-                    },
-          },
-          {
-           title => "threadstorm-any",
-           query => { "where"    => [ ["=" , "NAME", "perlformance.perl5.Threads.threadstorm" ],
-                                    ],
-                       "select"   => [ "NAME", "VALUE", "perlconfig_version" ],
-                      "order_by" => [ "VALUE_ID" ],
-                    },
-          },
-         ];
+        return decode_json("". # stringify
+                           File::Slurp::read_file
+                           (dist_dir('Benchmark-Perl-Formance-Analyzer')."/chartqueries/perlformance/hello-world.json"));
 }
 
 sub _search
