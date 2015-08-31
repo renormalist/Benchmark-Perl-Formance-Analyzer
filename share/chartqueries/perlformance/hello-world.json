@@ -1,150 +1,76 @@
 {
-   "charttitle" : "random benchmark selection",
-   "chartlines" : [
-      {
-         "query" : {
-            "order_by" : [
-               "VALUE_ID"
-            ],
-            "select" : [
-               "NAME",
-               "VALUE",
-               "perlconfig_version"
-            ],
-            "where" : [
-               [
-                  "=",
-                  "NAME",
-                  "perlformance.perl5.Shootout.binarytrees"
-               ]
-            ]
-         },
-         "title" : "binarytrees-any"
-      },
-      {
-         "query" : {
-            "order_by" : [
-               "VALUE_ID"
-            ],
-            "select" : [
-               "NAME",
-               "VALUE",
-               "perlconfig_version"
-            ],
-            "where" : [
-               [
-                  "=",
-                  "NAME",
-                  "perlformance.perl5.Shootout.fasta"
-               ]
-            ]
-         },
-         "title" : "fasta-any"
-      },
-      {
-         "query" : {
-            "order_by" : [
-               "VALUE_ID"
-            ],
-            "select" : [
-               "NAME",
-               "VALUE",
-               "perlconfig_version"
-            ],
-            "where" : [
-               [
-                  "=",
-                  "NAME",
-                  "perlformance.perl5.Shootout.nbody"
-               ]
-            ]
-         },
-         "title" : "nbody-any"
-      },
-      {
-         "query" : {
-            "order_by" : [
-               "VALUE_ID"
-            ],
-            "select" : [
-               "NAME",
-               "VALUE",
-               "perlconfig_version"
-            ],
-            "where" : [
-               [
-                  "=",
-                  "NAME",
-                  "perlformance.perl5.Shootout.spectralnorm"
-               ]
-            ]
-         },
-         "title" : "spectralnorm-any"
-      },
-      {
-         "query" : {
-            "order_by" : [
-               "VALUE_ID"
-            ],
-            "select" : [
-               "NAME",
-               "VALUE",
-               "perlconfig_version"
-            ],
-            "where" : [
-               [
-                  "=",
-                  "NAME",
-                  "perlformance.perl5.DPath.dpath"
-               ]
-            ]
-         },
-         "title" : "dpath-any"
-      },
-      {
-         "query" : {
-            "order_by" : [
-               "VALUE_ID"
-            ],
-            "select" : [
-               "NAME",
-               "VALUE",
-               "perlconfig_version"
-            ],
-            "where" : [
-               [
-                  "=",
-                  "NAME",
-                  "perlformance.perl5.P6STD.viv"
-               ],
-               [
-                  ">",
-                  "VALUE",
-                  1
-               ]
-            ]
-         },
-         "title" : "viv-any"
-      },
-      {
-         "query" : {
-            "order_by" : [
-               "VALUE_ID"
-            ],
-            "select" : [
-               "NAME",
-               "VALUE",
-               "perlconfig_version"
-            ],
-            "where" : [
-               [
-                  "=",
-                  "NAME",
-                  "perlformance.perl5.Threads.threadstorm"
-               ]
-            ]
-         },
-         "title" : "threadstorm-any"
-      }
-   ]
+    "charttitle" : "random benchmark selection",
+    "chartlines" : [
+        {
+            "title" : "binarytrees-any",
+            "query" : {
+                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
+                "where" : [
+                    [ "=", "NAME", "perlformance.perl5.Shootout.binarytrees" ]
+                ],
+                "order_by" : [ "VALUE_ID" ]
+            }
+        },
+        {
+            "title" : "fasta-any",
+            "query" : {
+                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
+                "where" : [
+                    [ "=", "NAME", "perlformance.perl5.Shootout.fasta" ]
+                ],
+                "order_by" : [ "VALUE_ID" ]
+            }
+        },
+        {
+            "title" : "nbody-any",
+            "query" : {
+                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
+                "where" : [
+                    [ "=", "NAME", "perlformance.perl5.Shootout.nbody" ]
+                ],
+                "order_by" : [ "VALUE_ID" ]
+            }
+        },
+        {
+            "title" : "spectralnorm-any",
+            "query" : {
+                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
+                "where" : [
+                    [ "=", "NAME", "perlformance.perl5.Shootout.spectralnorm" ]
+                ],
+                "order_by" : [ "VALUE_ID" ]
+            }
+        },
+        {
+            "title" : "dpath-any",
+            "query" : {
+                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
+                "where" : [
+                    [ "=", "NAME", "perlformance.perl5.DPath.dpath" ]
+                ],
+                "order_by" : [ "VALUE_ID" ]
+            }
+        },
+        {
+            "title" : "viv-any",
+            "query" : {
+                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
+                "where" : [
+                    [ "=", "NAME", "perlformance.perl5.P6STD.viv" ],
+                    [ ">", "VALUE", 1 ]
+                ],
+                "order_by" : [ "VALUE_ID" ]
+            }
+        },
+        {
+            "title" : "threadstorm-any",
+            "query" : {
+                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
+                "where" : [
+                    [ "=", "NAME", "perlformance.perl5.Threads.threadstorm" ]
+                ],
+                "order_by" : [ "VALUE_ID" ]
+            }
+        }
+    ]
 }
