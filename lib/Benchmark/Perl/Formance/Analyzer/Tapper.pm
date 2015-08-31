@@ -79,7 +79,7 @@ sub _print_to_template
         # print
         my $vars = {
                     RESULTMATRIX     => JSON->new->pretty->encode( $RESULTMATRIX ),
-                    title            => 'Perl::Formance '.$options->{charttitle},
+                    title            => 'Perl::Formance - '.$options->{charttitle},
                     x_key            => $options->{x_key},
                     isStacked        => $options->{isStacked},
                     interpolateNulls => $options->{interpolateNulls},
@@ -87,7 +87,9 @@ sub _print_to_template
                    };
 
         # to STDOUT
-        $self->tt->process($self->template, $vars)
+        my $outfile = $options->{outfile};
+
+        $self->tt->process($self->template, $vars, ($outfile eq '-' ? () : $outfile))
          or die $self->tt->error."\n";
 }
 
@@ -303,12 +305,21 @@ sub run
                                  verbose     => $self->verbose,
                                 };
         my $result_matrix = _process_results($results, $transform_options);
+
+        my $outfile;
+        if (not $outfile  = $self->outfile)
+        {
+                $outfile  =  $chart->{charttitle};
+                $outfile  =~ s/[\s\W:]+/-/g;
+                $outfile .=  ".html";
+        }
         my $render_options = {
                               x_key            => $self->x_key,
                               charttitle       => $chart->{charttitle},
                               isStacked        => "false",  # true, false, 'relative'
                               interpolateNulls => "true",   # true, false -- only works with isStacked=false
                               areaOpacity      => 0.0,
+                              outfile          => $outfile,
                              };
         $self->_print_to_template($result_matrix, $render_options);
 
