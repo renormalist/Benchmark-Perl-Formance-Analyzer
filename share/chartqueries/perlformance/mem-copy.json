@@ -1,5 +1,5 @@
 {
-   "charttitle" : "Mem - memory stress",
+   "charttitle" : "Mem.copy - memory stress",
    "chartlines" : [
        {
            "title" : "mem.copy/threads",
