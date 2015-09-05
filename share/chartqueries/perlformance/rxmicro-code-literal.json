@@ -1,12 +1,12 @@
 {
-   "charttitle" : "SpamAssassin.learn - macro benchmark",
+   "charttitle" : "RxMicro - regex micro benchmarks",
    "chartlines" : [
        {
-           "title" : "salearn.ham2/threads",
+           "title" : "rxmicro.code-literal/threads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.SpamAssassin.salearn.ham2" ],
+                   [  "=", "NAME", "perlformance.perl5.RxMicro.code-literal" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-thread%" ]
                ],
@@ -14,11 +14,11 @@
            }
        },
        {
-           "title" : "salearn.ham2/nothreads",
+           "title" : "rxmicro.code-literal/nothreads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.SpamAssassin.salearn.ham2" ],
+                   [  "=", "NAME", "perlformance.perl5.RxMicro.code-literal" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-nothread%" ]
                ],

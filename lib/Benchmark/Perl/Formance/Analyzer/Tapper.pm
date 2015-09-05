@@ -131,6 +131,8 @@ sub run
         require File::Find::Rule;
         require File::Basename;
 
+        say STDERR sprintf("Perl::Formance - chart rendering: ".~~gmtime."\n") if $self->verbose;
+
         my @chartnames =
          map { File::Basename::basename($_, ".json") }
           File::Find::Rule

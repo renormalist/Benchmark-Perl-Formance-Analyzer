@@ -1,12 +1,12 @@
 {
-   "charttitle" : "Shootout - Language shootout benchmarks",
+   "charttitle" : "The fastest accessors only - $obj->foo / $obj->foo(42)",
    "chartlines" : [
        {
-           "title" : "binarytrees/threads",
+           "title" : "Class::XSAccessor.get/threads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.binarytrees" ],
+                   [  "=", "NAME", "perlformance.perl5.AccessorsClassXSAccessor.get" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-thread%" ]
                ],
@@ -14,11 +14,11 @@
            }
        },
        {
-           "title" : "binarytrees/nothreads",
+           "title" : "Class::XSAccessor.get/nothreads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.binarytrees" ],
+                   [  "=", "NAME", "perlformance.perl5.AccessorsClassXSAccessor.get" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-nothread%" ]
                ],
@@ -26,11 +26,11 @@
            }
        },
        {
-           "title" : "fannkuch/threads",
+           "title" : "Class::XSAccessor.set/threads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.fannkuch" ],
+                   [  "=", "NAME", "perlformance.perl5.AccessorsClassXSAccessor.set" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-thread%" ]
                ],
@@ -38,11 +38,11 @@
            }
        },
        {
-           "title" : "fannkuch/nothreads",
+           "title" : "Class::XSAccessor.set/nothreads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.fannkuch" ],
+                   [  "=", "NAME", "perlformance.perl5.AccessorsClassXSAccessor.set" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-nothread%" ]
                ],
@@ -50,11 +50,11 @@
            }
        },
        {
-           "title" : "fasta/threads",
+           "title" : "Class::XSAccessor::Array.get/threads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.fasta" ],
+                   [  "=", "NAME", "perlformance.perl5.AccessorsClassXSAccessorArray.get" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-thread%" ]
                ],
@@ -62,11 +62,11 @@
            }
        },
        {
-           "title" : "fasta/nothreads",
+           "title" : "Class::XSAccessor::Array.get/nothreads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.fasta" ],
+                   [  "=", "NAME", "perlformance.perl5.AccessorsClassXSAccessorArray.get" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-nothread%" ]
                ],
@@ -74,11 +74,11 @@
            }
        },
        {
-           "title" : "nbody/threads",
+           "title" : "Class::XSAccessor::Array.set/threads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.nbody" ],
+                   [  "=", "NAME", "perlformance.perl5.AccessorsClassXSAccessorArray.set" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-thread%" ]
                ],
@@ -86,11 +86,11 @@
            }
        },
        {
-           "title" : "nbody/nothreads",
+           "title" : "Class::XSAccessor::Array.set/nothreads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.nbody" ],
+                   [  "=", "NAME", "perlformance.perl5.AccessorsClassXSAccessorArray.set" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-nothread%" ]
                ],
@@ -98,11 +98,11 @@
            }
        },
        {
-           "title" : "spectralnorm/threads",
+           "title" : "Mouse.get/threads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.spectralnorm" ],
+                   [  "=", "NAME", "perlformance.perl5.AccessorsMouse.get" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-thread%" ]
                ],
@@ -110,11 +110,11 @@
            }
        },
        {
-           "title" : "spectralnorm/nothreads",
+           "title" : "Mouse.get/nothreads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.spectralnorm" ],
+                   [  "=", "NAME", "perlformance.perl5.AccessorsMouse.get" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-nothread%" ]
                ],
@@ -122,11 +122,11 @@
            }
        },
        {
-           "title" : "fannkuch/threads",
+           "title" : "Mouse.set/threads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.fannkuch" ],
+                   [  "=", "NAME", "perlformance.perl5.AccessorsMouse.set" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-thread%" ]
                ],
@@ -134,24 +134,23 @@
            }
        },
        {
-           "title" : "fannkuch/nothreads",
+           "title" : "Mouse.set/nothreads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.fannkuch" ],
+                   [  "=", "NAME", "perlformance.perl5.AccessorsMouse.set" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-nothread%" ]
                ],
                "order_by" : [ "VALUE_ID" ]
            }
        },
-
        {
-           "title" : "knucleotide/threads",
+           "title" : "Moo.get/threads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.knucleotide" ],
+                   [  "=", "NAME", "perlformance.perl5.AccessorsMoo.get" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-thread%" ]
                ],
@@ -159,24 +158,23 @@
            }
        },
        {
-           "title" : "knucleotide/nothreads",
+           "title" : "Moo.get/nothreads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.knucleotide" ],
+                   [  "=", "NAME", "perlformance.perl5.AccessorsMoo.get" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-nothread%" ]
                ],
                "order_by" : [ "VALUE_ID" ]
            }
        },
-
        {
-           "title" : "mandelbrot/threads",
+           "title" : "Moo.set/threads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.mandelbrot" ],
+                   [  "=", "NAME", "perlformance.perl5.AccessorsMoo.set" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-thread%" ]
                ],
@@ -184,68 +182,11 @@
            }
        },
        {
-           "title" : "mandelbrot/nothreads",
+           "title" : "Moo.set/nothreads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.mandelbrot" ],
-                   [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
-                   [ "like", "bootstrap_perl_symbolic_name", "%-nothread%" ]
-               ],
-               "order_by" : [ "VALUE_ID" ]
-           }
-       },
-
-
-
-
-       {
-           "title" : "pidigits/threads",
-           "query" : {
-               "select" : [ "NAME", "VALUE", "perlconfig_version" ],
-               "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.pidigits" ],
-                   [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
-                   [ "like", "bootstrap_perl_symbolic_name", "%-thread%" ]
-               ],
-               "order_by" : [ "VALUE_ID" ]
-           }
-       },
-       {
-           "title" : "pidigits/nothreads",
-           "query" : {
-               "select" : [ "NAME", "VALUE", "perlconfig_version" ],
-               "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.pidigits" ],
-                   [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
-                   [ "like", "bootstrap_perl_symbolic_name", "%-nothread%" ]
-               ],
-               "order_by" : [ "VALUE_ID" ]
-           }
-       },
-
-
-
-
-
-       {
-           "title" : "regexdna/threads",
-           "query" : {
-               "select" : [ "NAME", "VALUE", "perlconfig_version" ],
-               "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.regexdna" ],
-                   [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
-                   [ "like", "bootstrap_perl_symbolic_name", "%-thread%" ]
-               ],
-               "order_by" : [ "VALUE_ID" ]
-           }
-       },
-       {
-           "title" : "regexdna/nothreads",
-           "query" : {
-               "select" : [ "NAME", "VALUE", "perlconfig_version" ],
-               "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Shootout.regexdna" ],
+                   [  "=", "NAME", "perlformance.perl5.AccessorsMoo.set" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-nothread%" ]
                ],

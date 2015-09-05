@@ -1,12 +1,12 @@
 {
-   "charttitle" : "Mem - memory stress",
+   "charttitle" : "accessors - $obj->foo / $obj->foo(42)",
    "chartlines" : [
        {
-           "title" : "mem.allocate/threads",
+           "title" : "selfmade.array.get/threads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Mem.allocate" ],
+                   [  "=", "NAME", "perlformance.perl5.Accessorsarray.get" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-thread%" ]
                ],
@@ -14,11 +14,11 @@
            }
        },
        {
-           "title" : "mem.allocate/nothreads",
+           "title" : "selfmade.array.get/nothreads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Mem.allocate" ],
+                   [  "=", "NAME", "perlformance.perl5.Accessorsarray.get" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-nothread%" ]
                ],
@@ -26,11 +26,11 @@
            }
        },
        {
-           "title" : "mem.copy/threads",
+           "title" : "selfmade.array.set/threads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Mem.copy" ],
+                   [  "=", "NAME", "perlformance.perl5.Accessorsarray.set" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-thread%" ]
                ],
@@ -38,11 +38,11 @@
            }
        },
        {
-           "title" : "mem.copy/nothreads",
+           "title" : "selfmade.array.set/nothreads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.Mem.copy" ],
+                   [  "=", "NAME", "perlformance.perl5.Accessorsarray.set" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-nothread%" ]
                ],

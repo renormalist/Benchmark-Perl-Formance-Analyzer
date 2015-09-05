@@ -1,12 +1,12 @@
 {
-   "charttitle" : "SpamAssassin.learn - macro benchmark",
+   "charttitle" : "RxMicro - regex micro benchmarks",
    "chartlines" : [
        {
-           "title" : "salearn.ham/threads",
+           "title" : "rxmicro.code-literal/threads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.SpamAssassin.salearn.ham" ],
+                   [  "=", "NAME", "perlformance.perl5.RxMicro.code-literal" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-thread%" ]
                ],
@@ -14,11 +14,11 @@
            }
        },
        {
-           "title" : "salearn.ham/nothreads",
+           "title" : "rxmicro.code-literal/nothreads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.SpamAssassin.salearn.ham" ],
+                   [  "=", "NAME", "perlformance.perl5.RxMicro.code-literal" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-nothread%" ]
                ],
@@ -26,11 +26,11 @@
            }
        },
        {
-           "title" : "salearn.ham2/threads",
+           "title" : "rxmicro.code-runtime/threads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.SpamAssassin.salearn.ham2" ],
+                   [  "=", "NAME", "perlformance.perl5.RxMicro.code-runtime" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-thread%" ]
                ],
@@ -38,11 +38,11 @@
            }
        },
        {
-           "title" : "salearn.ham2/nothreads",
+           "title" : "rxmicro.code-runtime/nothreads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.SpamAssassin.salearn.ham2" ],
+                   [  "=", "NAME", "perlformance.perl5.RxMicro.code-runtime" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-nothread%" ]
                ],
@@ -50,11 +50,11 @@
            }
        },
        {
-           "title" : "salearn.spam/threads",
+           "title" : "rxmicro.precompile-access/threads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.SpamAssassin.salearn.spam" ],
+                   [  "=", "NAME", "perlformance.perl5.RxMicro.precompile-access" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-thread%" ]
                ],
@@ -62,11 +62,11 @@
            }
        },
        {
-           "title" : "salearn.spam/nothreads",
+           "title" : "rxmicro.precompile-access/nothreads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.SpamAssassin.salearn.spam" ],
+                   [  "=", "NAME", "perlformance.perl5.RxMicro.precompile-access" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-nothread%" ]
                ],
@@ -74,11 +74,11 @@
            }
        },
        {
-           "title" : "salearn.spam2/threads",
+           "title" : "rxmicro.runtime-compile/threads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.SpamAssassin.salearn.spam2" ],
+                   [  "=", "NAME", "perlformance.perl5.RxMicro.runtime-compile" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-thread%" ]
                ],
@@ -86,11 +86,35 @@
            }
        },
        {
-           "title" : "salearn.spam2/nothreads",
+           "title" : "rxmicro.runtime-compile/nothreads",
            "query" : {
                "select" : [ "NAME", "VALUE", "perlconfig_version" ],
                "where" : [
-                   [  "=", "NAME", "perlformance.perl5.SpamAssassin.salearn.spam2" ],
+                   [  "=", "NAME", "perlformance.perl5.RxMicro.runtime-compile" ],
+                   [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
+                   [ "like", "bootstrap_perl_symbolic_name", "%-nothread%" ]
+               ],
+               "order_by" : [ "VALUE_ID" ]
+           }
+       },
+       {
+           "title" : "rxmicro.runtime-compile-nocache/threads",
+           "query" : {
+               "select" : [ "NAME", "VALUE", "perlconfig_version" ],
+               "where" : [
+                   [  "=", "NAME", "perlformance.perl5.RxMicro.runtime-compile-nocache" ],
+                   [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
+                   [ "like", "bootstrap_perl_symbolic_name", "%-thread%" ]
+               ],
+               "order_by" : [ "VALUE_ID" ]
+           }
+       },
+       {
+           "title" : "rxmicro.runtime-compile-nocache/nothreads",
+           "query" : {
+               "select" : [ "NAME", "VALUE", "perlconfig_version" ],
+               "where" : [
+                   [  "=", "NAME", "perlformance.perl5.RxMicro.runtime-compile-nocache" ],
                    [  "=", "sysinfo_cpu_name", "AMD Opteron(tm) Processor 4180" ],
                    [ "like", "bootstrap_perl_symbolic_name", "%-nothread%" ]
                ],
