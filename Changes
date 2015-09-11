@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - refactring: use another lib for data transformation
 
 0.003     2015-09-01
         - first chart generation
