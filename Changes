@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.005     2015-09-15
         - use BenchmarkAnything::Evaluations in with plain functions
 
 0.004     2015-09-11
