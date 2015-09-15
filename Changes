@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - use BenchmarkAnything::Evaluations in with plain functions
 
 0.004     2015-09-11
         - refactring: use another lib for data transformation
