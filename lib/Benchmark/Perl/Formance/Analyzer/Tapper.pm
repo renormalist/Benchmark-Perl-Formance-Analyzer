@@ -12,7 +12,6 @@ use version 0.77;
 use Data::Structure::Util 'unbless';
 use File::ShareDir 'dist_dir';
 use BenchmarkAnything::Storage::Frontend::Lib;
-use BenchmarkAnything::Evaluations;
 use Template;
 use JSON 'decode_json';
 
@@ -29,7 +28,6 @@ has 'blacklist'  => ( is => 'rw', isa => 'Str',      documentation => "metrics t
 has 'dropnull'   => ( is => 'rw', isa => 'Bool',     documentation => "Drop metrics with null values", default => 0 );
 has 'query'      => ( is => 'rw', isa => 'Str',      documentation => "Search query file or '-' for STDIN", default => "-" );
 has 'balib'      => ( is => 'rw',                    documentation => "where to search for benchmark results", default => sub { BenchmarkAnything::Storage::Frontend::Lib->new } );
-has 'evaluations'=> ( is => 'rw',                    documentation => "where to search for benchmark results", default => sub { BenchmarkAnything::Evaluations->new } );
 has 'template'   => ( is => 'rw', isa => 'Str',
                       documentation => 'output template file',
                       default => 'google-chart-area.tt',
@@ -132,6 +130,7 @@ sub run
 
         require File::Find::Rule;
         require File::Basename;
+        require BenchmarkAnything::Evaluations;
 
         say STDERR sprintf("Perl::Formance - chart rendering: ".~~gmtime."\n") if $self->verbose;
 
@@ -156,7 +155,7 @@ sub run
                                          verbose     => $self->verbose,
                                          debug       => $self->debug,
                                         };
-                my $result_matrix = $self->evaluations->transform_chartlines($chartlines, $transform_options);
+                my $result_matrix = BenchmarkAnything::Evaluations::transform_chartlines($chartlines, $transform_options);
 
                 my $outfile;
                 if (not $outfile  = $self->outfile)
