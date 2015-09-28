@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - replace File::Slurp with File::Slurper
 
 0.005     2015-09-15
         - use BenchmarkAnything::Evaluations in with plain functions
