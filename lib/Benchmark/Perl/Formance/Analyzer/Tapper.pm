@@ -96,8 +96,10 @@ sub _get_chart
 {
         my ($self, $chartname) = @_;
 
+        require File::Slurper;
+
         my $filename = dist_dir('Benchmark-Perl-Formance-Analyzer')."/chartqueries/perlformance/$chartname.json";
-        my $json = "".File::Slurp::read_file($filename);
+        my $json = File::Slurper::read_text($filename);
         if ($self->debug) {
                 say STDERR "READ: $chartname - $filename";
                 say STDERR "JSON:\n$json";
