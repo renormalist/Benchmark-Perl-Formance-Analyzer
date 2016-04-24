@@ -1,0 +1,37 @@
+#! /usr/bin/perl
+# PODNAME: benchmark-perlformance-analyze-benchmarkanything
+# ABSTRACT: Benchmark::Perl::Formance - process results
+
+use 5.010;
+use strict;
+use warnings;
+use Benchmark::Perl::Formance::Analyzer::BenchmarkAnything;
+
+my $analyzer = Benchmark::Perl::Formance::Analyzer::BenchmarkAnything->new_with_options;
+
+$analyzer->run;
+
+__END__
+
+=pod
+
+=head1 ABOUT
+
+This is a commandline tool to process Benchmark::Perl::Formance
+results which follow the
+L<BenchmarkAnything|http://benchmarkanything.org> schema as produced
+with C<benchmark-perlformance --benchmarkanything>.
+
+=head1 SYNOPSIS
+
+Usage:
+
+  $ benchmark-perlformance-analyze-benchmarkanything --subdir=path/to/results
+
+It finds all files below the given subdirectory which match one of the
+supported formats C<json> or C<yaml>, and processes their data.
+
+Please see C<benchmark-perlformance-analyze-benchmarkanything --help> for documentation.
+
+=cut
+

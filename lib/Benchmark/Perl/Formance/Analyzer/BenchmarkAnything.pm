@@ -1,5 +1,5 @@
-package Benchmark::Perl::Formance::Analyzer::Tapper;
-# ABSTRACT: Benchmark::Perl::Formance - analyze results using Tapper backend store
+package Benchmark::Perl::Formance::Analyzer::BenchmarkAnything;
+# ABSTRACT: Benchmark::Perl::Formance - analyze results using BenchmarkAnything backend store
 
 use 5.010;
 
@@ -193,15 +193,15 @@ __END__
 Analyze L<Benchmark::Perl::Formance|Benchmark::Perl::Formance> results.
 
 This is a commandline tool to process Benchmark::Perl::Formance
-results which follow the L<Tapper|http://tapper-testing.org> benchmark
-schema I<BenchmarkAnythingData> as produced with
-C<benchmark-perlformance --tapper>.
+results which follow the
+L<BenchmarkAnything|http://benchmarkanything.org> schema as produced
+with C<benchmark-perlformance --benchmarkanything>.
 
 =head1 SYNOPSIS
 
 Usage:
 
-  $ benchmark-perlformance-process-tapper
+  $ benchmark-perlformance-process-benchmarkanything
 
 =head1 METHODS
 
