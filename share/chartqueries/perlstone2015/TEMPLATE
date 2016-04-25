@@ -1,6 +1,6 @@
-# -*- mode: json -*-
 {
-   "charttitle" : "PerlStone2015 - Perl Benchmark Collection",
+   "charttitle" : "PerlStone2015 - __SHORTMETRICNAME__",
+   "modulename" : "__MODULENAME__",
    "chartlines" : [
        {
            "title" : "__SHORTMETRICNAME__/threads",

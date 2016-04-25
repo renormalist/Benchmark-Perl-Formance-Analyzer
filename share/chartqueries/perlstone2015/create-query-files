@@ -9,7 +9,7 @@ my $templatefile = "TEMPLATE";
 my $metricfile = "METRICLIST";
 
 open my $M, "<", $metricfile or die "Could not read $metricfile";
-my @metrics =
+my @metriclines =
  map { chomp; $_ }
  grep { $_ !~ /^\s*#/ } <$M>;
 
@@ -20,20 +20,23 @@ open $T, "<", $templatefile and do {
         close $T;
 };
 
-for my $m (map { chomp; $_ } @metrics)
+for my $line (@metriclines)
 {
-        (my $shortname = $m) =~ s/^$metricprefix\.//;
+        my ($metric, $module) =  split(",", $line);
+
+        (my $shortname = $metric) =~ s/^$metricprefix\.//;
 
         my $filename = $shortname;
         $filename    =~ s/\(F\)$/-FASTMODE/g;
         $filename    =~ s/[^.\w-]/_/g;
         $filename   .= ".json";
 
-        print "$m - $shortname - $filename\n";
+        # print "$metric - $shortname - $filename\n";
 
         my $jsonfile = $template;
         $jsonfile =~ s/__SHORTMETRICNAME__/$shortname/g;
-        $jsonfile =~ s/__METRICNAME__/$m/g;
+        $jsonfile =~ s/__METRICNAME__/$metric/g;
+        $jsonfile =~ s/__MODULENAME__/$module/g;
 
         open my $OUTFILE, ">", $filename or die "Could not write $filename";
         print $OUTFILE $jsonfile;

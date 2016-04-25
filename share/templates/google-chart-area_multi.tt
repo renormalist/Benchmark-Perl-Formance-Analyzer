@@ -6,11 +6,16 @@
     <script type="text/javascript">
       // https://google-developers.appspot.com/chart/interactive/docs/gallery/areachart
       google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([% RESULTMATRIX %]);
+
+[% FOREACH chunk IN chartlist %]
+<!-- number:  [% chunk.number %] -->
+<!-- title:   [% chunk.charttitle %] -->
+<!-- outfile: [% chunk.outfile %] -->
+      google.setOnLoadCallback(drawChart_[% chunk.number %]);
+      function drawChart_[% chunk.number %]() {
+        var data = google.visualization.arrayToDataTable([% chunk.json %]);
         var options = {
-            title: '[% title %]',
+            title: 'Perl::Formance - [% chunk.charttitle %]',
             hAxis: {title: '[% x_key %]',  titleTextStyle: {color: '#333'}, slantedTextAngle: 45},
             vAxis: {minValue: 0, title:'seconds (smaller is better)'},
             pointSize: 4,
@@ -19,12 +24,17 @@
             isStacked: [% isStacked %]
         };
 
-        var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+        var chart = new google.visualization.AreaChart(document.getElementById('chart_div_[% chunk.number %]'));
         chart.draw(data, options);
       }
+[% END %]
     </script>
   </head>
   <body>
-    <div id="chart_div" style="width: [% width %]px; height: [% height %]px;"></div>
+  <h1>Perl::Formance - [% querybundle %]</h1>
+[% FOREACH chunk IN chartlist %]
+    <a style="float:left;" href="[% chunk.outfile %]"><div id="chart_div_[% chunk.number %]" style="width: [% width %]px; height: [% height %]px;"></div></a>
+[% END %]
+  <h1>
   </body>
 </html>
