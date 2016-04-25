@@ -51,7 +51,7 @@ has 'y_key'       => ( is => 'rw', isa => 'Str',      documentation => "y-axis k
 has 'y_type'      => ( is => 'rw', isa => 'Str',      documentation => "y-axis type", default => "numeric" );
 has 'aggregation' => ( is => 'rw', isa => 'Str',      documentation => "which aggregation to use (avg, stdv, ci_95_lower, ci_95_upper)", default => "avg" );     # sub entries of {stats}: avg, stdv, ci_95_lower, ci_95_upper
 has 'querybundle' => ( is => 'rw', isa => 'Str',      documentation => "which chartqueries/ subdirectory (e.g., perlformance, perlstone2015)", default => 'perlstone2015' );
-has 'rawnumbers'  => ( is => 'rw', isa => 'Str',      default => "" );
+has '_rawnumbers'  => ( is => 'rw', isa => 'Str',      default => "" );
 
 use namespace::clean -except => 'meta';
 __PACKAGE__->meta->make_immutable;
@@ -174,7 +174,7 @@ sub run
         my $timestamp = ~~gmtime;
         my $headline  = "Perl::Formance - chart rendering: $timestamp\n";
         say STDERR sprintf($headline) if $self->verbose;
-        $self->rawnumbers($self->rawnumbers.$headline);
+        $self->_rawnumbers($self->_rawnumbers.$headline);
 
         my $querybundle = $self->querybundle;
 
@@ -201,7 +201,7 @@ sub run
                                          debug       => $self->debug,
                                         };
                 my ($result_matrix, $rawnumbers) = BenchmarkAnything::Evaluations::transform_chartlines($chartlines, $transform_options);
-                $self->rawnumbers($self->rawnumbers."\n$rawnumbers");
+                $self->_rawnumbers($self->_rawnumbers."\n$rawnumbers");
 
                 my $outfile;
                 if (not $outfile  = $self->outfile)
@@ -248,7 +248,7 @@ sub run
         # RAW NUMBERS
         my $rawnumbers_file    = File::HomeDir->my_home . "/perlformance/results/$querybundle/raw-numbers.txt";
         open my $RAWNUMBERS, ">", $rawnumbers_file or die "Could not write to $rawnumbers_file";
-        print $RAWNUMBERS $self->rawnumbers;
+        print $RAWNUMBERS $self->_rawnumbers;
         close $RAWNUMBERS;
 
         # Done
