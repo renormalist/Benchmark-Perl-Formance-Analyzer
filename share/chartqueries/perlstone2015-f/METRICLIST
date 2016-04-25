@@ -22,7 +22,5 @@ perlformance.perl5.PerlStone2015.regex.runtime_comp(F),Benchmark::Perl::Formance
 perlformance.perl5.PerlStone2015.regex.runtime_comp_nocache(F),Benchmark::Perl::Formance::Plugin::PerlStone2015::regex
 perlformance.perl5.PerlStone2015.regex.split1(F),Benchmark::Perl::Formance::Plugin::PerlStone2015::regex
 perlformance.perl5.PerlStone2015.regex.split2(F),Benchmark::Perl::Formance::Plugin::PerlStone2015::regex
-perlformance.perl5.PerlStone2015.regex.splitratio(F),Benchmark::Perl::Formance::Plugin::PerlStone2015::regex
-perlformance.perl5.PerlStone2015.regex.trie_limit(F),Benchmark::Perl::Formance::Plugin::PerlStone2015::regex
 perlformance.perl5.PerlStone2015.regexdna(F),Benchmark::Perl::Formance::Plugin::PerlStone2015::regexdna
 perlformance.perl5.PerlStone2015.spectralnorm(F),Benchmark::Perl::Formance::Plugin::PerlStone2015::spectralnorm
