@@ -31,7 +31,7 @@ for my $line (@metriclines)
         $filename    =~ s/[^.\w-]/_/g;
         $filename   .= ".json";
 
-        # print "$metric - $shortname - $filename\n";
+        #print STDERR "$metric - $shortname - $filename - $module\n";
 
         my $jsonfile = $template;
         $jsonfile =~ s/__SHORTMETRICNAME__/$shortname/g;

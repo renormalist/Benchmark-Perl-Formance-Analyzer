@@ -77,11 +77,11 @@ sub _print_to_template
 
         require JSON;
         my $outfile = $options->{outfile};
-        my $title = $options->{charttitle} || "";
 
         my $vars = {
                     RESULTMATRIX     => JSON->new->pretty->encode($RESULTMATRIX),
-                    title            => $title,
+                    title            => ($options->{charttitle} || ""),
+                    modulename       => ($options->{modulename} || ""),
                     outfile          => $outfile,
                     x_key            => $options->{x_key},
                     isStacked        => $options->{isStacked},
@@ -172,7 +172,11 @@ sub run
         require BenchmarkAnything::Evaluations;
 
         my $timestamp = ~~gmtime;
-        my $headline  = "Perl::Formance - chart rendering: $timestamp\n";
+        my $headline  = "Perl::Formance - charts rendered at: $timestamp\n\n";
+        $headline    .= "ci95l - confidence intervall 95 lower\n";
+        $headline    .= "ci95u - confidence intervall 95 upper\n";
+        $headline    .= "avg   - average\n";
+        $headline    .= "stdv  - standard deviation\n";
         say STDERR sprintf($headline) if $self->verbose;
         $self->_rawnumbers($self->_rawnumbers.$headline);
 
@@ -212,9 +216,11 @@ sub run
                         $outfile .=  ".html";
                         $outfile  = File::HomeDir->my_home . "/perlformance/results/$querybundle/".$outfile;
                 }
+
                 my $render_options = {
                                       x_key            => $self->x_key,
                                       charttitle       => ($chart->{charttitle} || $chartname),
+                                      modulename       => $chart->{modulename},
                                       isStacked        => "false", # true, false, 'relative'
                                       interpolateNulls => "true", # true, false -- only works with isStacked=false
                                       areaOpacity      => 0.0,
@@ -226,6 +232,7 @@ sub run
                                   outfile    => File::Basename::basename($outfile),
                                   data       => $result_matrix,
                                   charttitle => ($chart->{charttitle} || $chartname),
+                                  modulename => $chart->{modulename},
                                  };
                 say STDERR "Done." if $self->verbose;
 

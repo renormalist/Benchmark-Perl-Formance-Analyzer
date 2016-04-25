@@ -1,5 +1,5 @@
 {
-   "charttitle" : "PerlStone2015 - __SHORTMETRICNAME__",
+   "charttitle" : "__SHORTMETRICNAME__",
    "modulename" : "__MODULENAME__",
    "chartlines" : [
        {

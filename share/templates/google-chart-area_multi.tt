@@ -8,14 +8,11 @@
       google.load("visualization", "1", {packages:["corechart"]});
 
 [% FOREACH chunk IN chartlist %]
-<!-- number:  [% chunk.number %] -->
-<!-- title:   [% chunk.charttitle %] -->
-<!-- outfile: [% chunk.outfile %] -->
       google.setOnLoadCallback(drawChart_[% chunk.number %]);
       function drawChart_[% chunk.number %]() {
         var data = google.visualization.arrayToDataTable([% chunk.json %]);
         var options = {
-            title: 'Perl::Formance - [% chunk.charttitle %]',
+            title: '[% chunk.charttitle %]',
             hAxis: {title: '[% x_key %]',  titleTextStyle: {color: '#333'}, slantedTextAngle: 45},
             vAxis: {minValue: 0, title:'seconds (smaller is better)'},
             pointSize: 4,
@@ -32,6 +29,12 @@
   </head>
   <body>
   <h1>Perl::Formance - [% querybundle %]</h1>
+  <ul>
+    <li><a href="raw-numbers.txt">Raw numbers</a> used on this page with their statistical description</li>
+    <li><a href="https://metacpan.org/pod/BenchmarkAnything::Evaluations">BenchmarkAnything::Evaluations</a> collecting the statistics</li>
+    <li><a href="https://metacpan.org/search?q=Benchmark%3A%3APerl%3A%3AFormance%3A%3APlugin%3A%3A&search_type=authors">Benchmark::Perl::Formance plugins</a> on CPAN</li>
+  </ul>
+
 [% FOREACH chunk IN chartlist %]
     <a style="float:left;" href="[% chunk.outfile %]"><div id="chart_div_[% chunk.number %]" style="width: [% width %]px; height: [% height %]px;"></div></a>
 [% END %]

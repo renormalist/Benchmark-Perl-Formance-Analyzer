@@ -25,6 +25,9 @@
     </script>
   </head>
   <body>
+    <ul>
+        <li>Benchmark code: <a href="https://metacpan.org/pod/[% modulename %]">[% modulename %]</a></li>
+    </ul>
     <div id="chart_div" style="width: [% width %]px; height: [% height %]px;"></div>
   </body>
 </html>
