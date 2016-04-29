@@ -82,6 +82,7 @@ sub _print_to_template
                     RESULTMATRIX     => JSON->new->pretty->encode($RESULTMATRIX),
                     title            => ($options->{charttitle} || ""),
                     modulename       => ($options->{modulename} || ""),
+                    querybundle      => $options->{querybundle},
                     outfile          => $outfile,
                     x_key            => $options->{x_key},
                     isStacked        => $options->{isStacked},
@@ -221,6 +222,7 @@ sub run
                                       x_key            => $self->x_key,
                                       charttitle       => ($chart->{charttitle} || $chartname),
                                       modulename       => $chart->{modulename},
+                                      querybundle      => $querybundle,
                                       isStacked        => "false", # true, false, 'relative'
                                       interpolateNulls => "true", # true, false -- only works with isStacked=false
                                       areaOpacity      => 0.0,
