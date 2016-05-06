@@ -23,6 +23,7 @@ open $T, "<", $templatefile and do {
 for my $line (@metriclines)
 {
         my ($metric, $module) =  split(",", $line);
+        $module ||= '';
 
         (my $shortname = $metric) =~ s/^$metricprefix\.//;
 
