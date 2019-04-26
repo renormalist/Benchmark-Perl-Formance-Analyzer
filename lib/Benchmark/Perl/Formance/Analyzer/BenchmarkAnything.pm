@@ -13,7 +13,7 @@ use Data::Structure::Util 'unbless';
 use File::ShareDir 'dist_dir';
 use BenchmarkAnything::Storage::Frontend::Lib;
 use Template;
-use JSON 'decode_json';
+use JSON 'decode_json', 'encode_json';
 
 with 'MooseX::Getopt::Usage',
  'MooseX::Getopt::Usage::Role::Man';
@@ -154,10 +154,14 @@ sub _search
         my @results;
         foreach my $q (@{$chartline_queries})
         {
+                my $url = $self->balib->{config}{benchmarkanything}{backends}{http}{base_url};
+                say STDERR "curl -s -XPUT $url/api/v1/search -d '".encode_json($q->{query})."'" if $self->debug and $url;
+                my $results = $self->balib->search($q->{query});
+                print STDERR "RESULTS: ".Dumper($results) if $self->debug;
                 push @results,
                 {
                  title   => $q->{title},
-                 results => $self->balib->search($q->{query}),
+                 results => $results,
                 };
         }
 
@@ -259,6 +263,8 @@ sub run
         open my $RAWNUMBERS, ">", $rawnumbers_file or die "Could not write to $rawnumbers_file";
         print $RAWNUMBERS $self->_rawnumbers;
         close $RAWNUMBERS;
+
+        say STDERR "Results: file://$dashboard_file" if $self->verbose;
 
         # Done
         return;
