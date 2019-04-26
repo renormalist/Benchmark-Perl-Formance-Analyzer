@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - included some forgotten github changes
 
 0.008     2019-04-26
         - chart definitions for the pts2019 runs
