@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.008     2019-04-26
         - chart definitions for the pts2019 runs
         - better log messages for debugging
 
