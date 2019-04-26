@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - chart definitions for the pts2019 runs
+        - better log messages for debugging
 
 0.007     2016-04-25
         - auto-generate chartbundle templates
